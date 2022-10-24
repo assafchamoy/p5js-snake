@@ -1,11 +1,13 @@
-const CANVAS_SCALE = 30;
+const CANVAS_SIZE = 800;
+const CANVAS_SCALE = 20;
 const RECT_SIZE = 1;
-const FRAME_RATE = 10;
+const FRAME_RATE = 5;
 
 let snake;
 let food;
 let retryBtnElem;
 let gameOverMsgElem;
+let soundClassifier;
 
 function initGame () {
   snake = new Snake(RECT_SIZE, CANVAS_SCALE);
@@ -16,31 +18,65 @@ function initGame () {
   gameOverMsgElem.style.display = 'none';
 }
 
+function modelReady() {
+  soundClassifier.classify((error, result) => {
+    if(error) {
+      console.error(error);
+      return;
+    }
+
+    // Highest confidence result
+    const { label } = result[0];
+
+    // Voice controls
+    switch (label) {
+      case VOICE_UP:
+        snake.move(GO_UP);
+        break;
+      case VOICE_DOWN:
+        snake.move(GO_DOWN);
+        break;
+      case VOICE_LEFT:
+        snake.move(GO_LEFT);
+        break;
+      case VOICE_RIGHT:
+        snake.move(GO_RIGHT);
+        break;
+    }
+
+  });
+}
+
 function setup () {
+  // High confidence score for more accurate response
+  const options = { probabilityThreshold: 0.95 };
   retryBtnElem = document.querySelector('.retryBtn');
   gameOverMsgElem = document.querySelector('.gameOverMsg');
+  soundClassifier = ml5.soundClassifier('SpeechCommands18w', options, modelReady);
 
-  createCanvas(800, 800);
+  createCanvas(CANVAS_SIZE, CANVAS_SIZE);
   frameRate(FRAME_RATE);
   initGame();
 }
 
-function keyPressed () {
-  switch (keyCode) {
-    case UP_ARROW:
-      snake.move(GO_UP);
-      break;
-    case DOWN_ARROW:
-      snake.move(GO_DOWN);
-      break;
-    case LEFT_ARROW:
-      snake.move(GO_LEFT);
-      break;
-    case RIGHT_ARROW:
-      snake.move(GO_RIGHT);
-      break;
-  }
-}
+// Keyboard Controls
+
+// function keyPressed () {
+//   switch (keyCode) {
+//     case UP_ARROW:
+//       snake.move(KEYBOARD_UP);
+//       break;
+//     case DOWN_ARROW:
+//       snake.move(KEYBOARD_DOWN);
+//       break;
+//     case LEFT_ARROW:
+//       snake.move(KEYBOARD_LEFT);
+//       break;
+//     case RIGHT_ARROW:
+//       snake.move(KEYBOARD_RIGHT);
+//       break;
+//   }
+// }
 
 function renderEndGame () {
   noLoop();

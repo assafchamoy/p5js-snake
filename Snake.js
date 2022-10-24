@@ -51,7 +51,7 @@ class Snake {
 
   }
 
-  grow() {
+  #grow() {
     const headCpy = this.#getSneakHead();
     this.body.push(headCpy);
   }
@@ -60,7 +60,7 @@ class Snake {
     // Collision detection
     const didSnakeEat = this.pos.x === food.pos.x && this.pos.y === food.pos.y;
     if(didSnakeEat) {
-        this.grow();
+        this.#grow();
     }
     
     return didSnakeEat;

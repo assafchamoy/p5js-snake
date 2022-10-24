@@ -6,7 +6,7 @@ class Food {
         this.pos;
     }
 
-    generateFood(scale) {
+    generateFood() {
         const scaledW = width / CANVAS_SCALE;
         const scaledH = height / CANVAS_SCALE;
         this.pos = createVector(floor(random(scaledW)), floor(random(scaledH)));
